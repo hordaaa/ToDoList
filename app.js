@@ -75,7 +75,7 @@ listOfTasks.onclick = function (event) {
 
     } else if (event.target.className.includes("edit-button")){ // Если нажата кнопка "изменить задачу", то отображаем prompt и заменяем им контент
         let userInput = prompt("Edit your task", arrayOfTasks[index].text)
-        arrayOfTasks[index].text = userInput
+        arrayOfTasks[index].text = userInput || arrayOfTasks[index].text
         localStorage.setItem("tasks", JSON.stringify(arrayOfTasks))
     }
     update()
