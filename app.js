@@ -4,20 +4,28 @@ let listOfTasks = document.getElementById("list-tasks")
 let noTasks = document.getElementById("no-tasks")
 let elemetsOfTaskList = document.getElementsByClassName("task")
 let clearButton = document.getElementById("clear-button")
+let themeChangeButton = document.getElementById("theme-change-button")
 
-if (!localStorage.getItem("tasks")) // Инициализируем список задач в localStorage
+let moonImage = 'url("./images/moon.png")'
+let sunImage = 'url("./images/sun.png")'
+
+
+if (!localStorage.getItem("tasks"))
     localStorage.setItem("tasks", "[]")
+
 
 let arrayOfTasks = JSON.parse(localStorage.getItem("tasks"))
 
-for (let i of elemetsOfTaskList) { // Наполняем список задач если в HTML есть задачи по умолчанию, в localStorage сохраняем их
+
+// Наполняем список задач если в HTML есть задачи по умолчанию, в localStorage сохраняем их
+for (let i of elemetsOfTaskList) { 
     arrayOfTasks.push({ 
         done: i.childNodes[3].childNodes[1].dataset.doneIndex, // Статус выполнения задачи
         text: String(i.childNodes[1].textContent), // Контент задачи
     })   
 }
 
-localStorage.setItem("tasks", JSON.stringify(arrayOfTasks))  // Сохраняем список задач в localStorage
+localStorage.setItem("tasks", JSON.stringify(arrayOfTasks))
 
 function update() { 
     // Отображение списка задач
@@ -27,25 +35,26 @@ function update() {
             `<div class="task" data-index="${i}">
             <p class="task-name ${arrayOfTasks[i].done === "1" ? "done-task-text": ''}">${arrayOfTasks[i].text}</p>
             <div class="buttons">
-                <button class="done-button ${arrayOfTasks[i].done === "1" ? "done-task-button": ''}">✔</button>
-                <button class="delete-button">❌</button>
-                <button class="edit-button">✏️</button>
+                <button class="btn done-button ${arrayOfTasks[i].done === "1" ? "done-task-button": ''}">✔</button>
+                <button class="btn delete-button">❌</button>
+                <button class="btn edit-button">✏️</button>
             </div>
         </div>`)
     }
     
-    if (!arrayOfTasks.length){ // Если нет задач, отображаем блок "нет задач"
+    // Если нет задач, отображаем блок "нет задач"
+    if (!arrayOfTasks.length){ 
         noTasks.style.display = "block"
         
-    } else { // Скрываем блок
+    } else {
         noTasks.style.display = "none"
     }  
 }
 
 update()
 
-function add_task () {
-    // Если ввод не пуст, добавляем задачу в localStorage и отображаем список
+function addTask () {
+    // Если пользовательский ввод не пуст, добавляем задачу в localStorage и отображаем список
     if (taskContent.value) { 
         
         arrayOfTasks.push({
@@ -60,35 +69,58 @@ function add_task () {
     }
 }
 
-addTaskButton.onclick = add_task
+addTaskButton.addEventListener("click", addTask)
 
-listOfTasks.onclick = function (event) {
+listOfTasks.addEventListener("click", event => {
 
     let index = event.target.closest(".task").dataset.index // Получаем индекс задачи
 
-    if (event.target.className.includes("done-button")){ // Если нажата кнопка "задача выполнена", то меняем ее флаг и сохраняем в localStorage 
+    // Если нажата кнопка "задача выполнена", то меняем ее флаг и сохраняем в localStorage 
+    if (event.target.className.includes("done-button")){ 
         arrayOfTasks[index].done = arrayOfTasks[index].done === "1" ? "0": "1"
-        localStorage.setItem("tasks", JSON.stringify(arrayOfTasks))
-
-    } else if (event.target.className.includes("delete-button")){ // Если нажата кнопка "удалить задачу", то удаляем ее из списка
+    
+    // Если нажата кнопка "удалить задачу", то удаляем ее из списка
+    } else if (event.target.className.includes("delete-button")){ 
         arrayOfTasks.splice(index, 1)
 
-    } else if (event.target.className.includes("edit-button")){ // Если нажата кнопка "изменить задачу", то отображаем prompt и заменяем им контент
+    // Если нажата кнопка "изменить задачу", то отображаем prompt и заменяем им ее контент
+    } else if (event.target.className.includes("edit-button")){ 
         let userInput = prompt("Edit your task", arrayOfTasks[index].text)
         arrayOfTasks[index].text = userInput || arrayOfTasks[index].text
-        localStorage.setItem("tasks", JSON.stringify(arrayOfTasks))
     }
+
+    localStorage.setItem("tasks", JSON.stringify(arrayOfTasks))
+
     update()
-}
+})
 
-document.onkeydown = function (event) { // Если Enter, то добавляем задачу
+// Если Enter, то добавляем задачу
+document.addEventListener("keydown",  event => { 
     if (event.code === "Enter") {
-        add_task()
+        addTask()
     }
-}
+})
 
-clearButton.onclick = function () { // Очищаем список задач по нажатию кнопки
+// Очищаем список задач по нажатию кнопки
+clearButton.addEventListener("click", () => { 
     arrayOfTasks = []
     localStorage.setItem("tasks", "[]")
     update()
-}
+})
+
+themeChangeButton.style.backgroundImage = sunImage
+
+themeChangeButton.addEventListener("click", () => {
+
+    document.body.classList.toggle("dark-theme")
+
+    // Меняем картинки по очереди
+    if (themeChangeButton.style.backgroundImage === sunImage){
+        themeChangeButton.style.backgroundImage = moonImage
+
+    } else {
+        themeChangeButton.style.backgroundImage = sunImage
+    }
+})
+
+
