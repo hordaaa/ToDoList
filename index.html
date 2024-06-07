@@ -8,16 +8,21 @@
     <script src="app.js" defer></script>
 </head>
 <body>
-    <div class="window">
-        <div class="add-task">
-            <label id="label-task" value="">Write task: <input type="text" id="input-task"></label>
-            <button id="add-task">Add task</button>
-            <button id="clear-button">Clear tasks</button>
+    <div class="main">
+        <div class="theme">
+            <button id="theme-change-button"></button>
         </div>
-        <div class="main-tasks" id="list-tasks">
-        </div>
-        <div id="no-tasks">
-            <p>No tasks now!</p>
+        <div class="window">
+            <div class="add-task">
+                <label id="label-task" value="">Write task: <input type="text" id="input-task"></label>
+                <button id="add-task">Add task</button>
+                <button id="clear-button">Clear tasks</button>
+            </div>
+            <div class="main-tasks" id="list-tasks">
+            </div>
+            <div id="no-tasks">
+                <p>No tasks now!</p>
+            </div>
         </div>
     </div>
 </body>
